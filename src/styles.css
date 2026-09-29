@@ -18,3 +18,7 @@
 .form-control:focus {
   background-color: transparent;
 }
+
+.modal {
+  --bs-modal-bg: #fff;
+}
