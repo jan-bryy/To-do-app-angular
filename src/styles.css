@@ -3,5 +3,18 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-  --bs-body-bg: #eef2f7;
+  --bs-body-bg: #d6f8fd;
+}
+
+.card {
+  --bs-card-bg: #fff6f000;
+}
+
+.form-control {
+  background-color: transparent;
+  border-width: 2px;
+}
+
+.form-control:focus {
+  background-color: transparent;
 }
