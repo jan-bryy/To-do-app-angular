@@ -1,0 +1,11 @@
+<li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+    @if (editing) {
+    <input class="form-control" [(ngModel)]="draft" (keyup.enter)="confirm()" />
+    <button class="btn btn-success btn-sm" (click)="confirm()">Save</button>
+    <button class="btn btn-secondary btn-sm" (click)="editing = false">Cancel</button>
+    } @else {
+    <span class="flex-grow-1">{{ task.title }}</span>
+    <button class="btn btn-outline-primary btn-sm" (click)="startEdit()">Edit</button>
+    <button class="btn btn-outline-danger btn-sm" (click)="remove.emit()">Delete</button>
+    }
+</li>

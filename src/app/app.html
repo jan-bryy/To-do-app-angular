@@ -1,0 +1,16 @@
+<div class="container my-5" style="max-width: 600px">
+  <h1 class="mb-4 text-center">Todo App</h1>
+
+  <div class="input-group mb-3">
+    <input class="form-control" placeholder="New task..." [(ngModel)]="newTitle" (keyup.enter)="add()" />
+    <button class="btn btn-primary" (click)="add()">Add</button>
+  </div>
+
+  <ul class="list-group">
+    @for (task of tasks; track task.id) {
+    <app-task-item [task]="task" (save)="update(task.id, $event)" (remove)="delete(task.id)" />
+    } @empty {
+    <li class="list-group-item text-muted text-center">No tasks yet.</li>
+    }
+  </ul>
+</div>
