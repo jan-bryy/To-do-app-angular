@@ -10,6 +10,7 @@ import { Task, TaskService } from './task-service';
 })
 export class App {
   newTitle = '';
+  newDescription = '';
 
   constructor(private taskService: TaskService) {}
 
@@ -19,12 +20,13 @@ export class App {
 
   add() {
     if (!this.newTitle.trim()) return;
-    this.taskService.add(this.newTitle.trim());
+    this.taskService.add(this.newTitle.trim(), this.newDescription.trim());
     this.newTitle = '';
+    this.newDescription = '';
   }
 
-  update(id: number, title: string) {
-    this.taskService.update(id, title);
+  update(id: number, changes: { title: string; description: string }) {
+    this.taskService.update(id, changes.title, changes.description);
   }
 
   delete(id: number) {

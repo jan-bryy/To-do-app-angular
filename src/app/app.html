@@ -1,9 +1,11 @@
 <div class="container my-5" style="max-width: 600px">
   <h1 class="mb-4 text-center">Todo App</h1>
 
-  <div class="input-group mb-3">
-    <input class="form-control" placeholder="New task..." [(ngModel)]="newTitle" (keyup.enter)="add()" />
-    <button class="btn btn-primary" (click)="add()">Add</button>
+  <div class="mb-3">
+    <input class="form-control mb-2" placeholder="Task title..." [(ngModel)]="newTitle" (keyup.enter)="add()" />
+    <textarea class="form-control mb-2" rows="2" placeholder="Description (optional)..."
+      [(ngModel)]="newDescription"></textarea>
+    <button class="btn btn-primary w-100" (click)="add()">Add Task</button>
   </div>
 
   <ul class="list-group">

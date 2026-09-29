@@ -1,11 +1,21 @@
-<li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+<li class="list-group-item">
     @if (editing) {
-    <input class="form-control" [(ngModel)]="draft" (keyup.enter)="confirm()" />
-    <button class="btn btn-success btn-sm" (click)="confirm()">Save</button>
+    <input class="form-control mb-2" placeholder="Title" [(ngModel)]="draftTitle" />
+    <textarea class="form-control mb-2" rows="2" placeholder="Description" [(ngModel)]="draftDescription"></textarea>
+    <button class="btn btn-success btn-sm me-2" (click)="confirm()">Save</button>
     <button class="btn btn-secondary btn-sm" (click)="editing = false">Cancel</button>
     } @else {
-    <span class="flex-grow-1">{{ task.title }}</span>
-    <button class="btn btn-outline-primary btn-sm" (click)="startEdit()">Edit</button>
-    <button class="btn btn-outline-danger btn-sm" (click)="remove.emit()">Delete</button>
+    <div class="d-flex justify-content-between align-items-start gap-2">
+        <div>
+            <div class="fw-semibold">{{ task.title }}</div>
+            @if (task.description) {
+            <div class="text-muted small">{{ task.description }}</div>
+            }
+        </div>
+        <div class="text-nowrap">
+            <button class="btn btn-outline-primary btn-sm me-1" (click)="startEdit()">Edit</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="remove.emit()">Delete</button>
+        </div>
+    </div>
     }
 </li>

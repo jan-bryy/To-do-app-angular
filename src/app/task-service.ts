@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 export interface Task {
   id: number;
   title: string;
+  description: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -14,15 +15,16 @@ export class TaskService {
     return this.tasks;
   }
 
-  add(title: string) {
-    this.tasks.push({ id: Date.now(), title });
+  add(title: string, description: string) {
+    this.tasks.push({ id: Date.now(), title, description });
     this.save();
   }
 
-  update(id: number, title: string) {
+  update(id: number, title: string, description: string) {
     const task = this.tasks.find(t => t.id === id);
     if (task) {
       task.title = title;
+      task.description = description;
       this.save();
     }
   }

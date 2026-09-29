@@ -9,19 +9,26 @@ import { Task } from '../task-service';
 })
 export class TaskItem {
   @Input({ required: true }) task!: Task;
-  @Output() save = new EventEmitter<string>();
+  @Output() save = new EventEmitter<{ title: string; description: string }>();
   @Output() remove = new EventEmitter<void>();
 
   editing = false;
-  draft = '';
+  draftTitle = '';
+  draftDescription = '';
 
   startEdit() {
-    this.draft = this.task.title;
+    this.draftTitle = this.task.title;
+    this.draftDescription = this.task.description ?? '';
     this.editing = true;
   }
 
   confirm() {
-    if (this.draft.trim()) this.save.emit(this.draft.trim());
+    if (this.draftTitle.trim()) {
+      this.save.emit({
+        title: this.draftTitle.trim(),
+        description: this.draftDescription.trim(),
+      });
+    }
     this.editing = false;
   }
 }
