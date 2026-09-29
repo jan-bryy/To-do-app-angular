@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TaskItem } from './task-item/task-item';
-import { Task, TaskService } from './task-service';
+import { TaskDraft, TaskService } from './task-service';
 
 @Component({
   selector: 'app-root',
@@ -9,27 +9,36 @@ import { Task, TaskService } from './task-service';
   templateUrl: './app.html',
 })
 export class App {
-  newTitle = '';
-  newDescription = '';
+  private readonly taskService = inject(TaskService);
 
-  constructor(private taskService: TaskService) {}
+  protected readonly tasks = this.taskService.tasks;
+  protected readonly formOpen = signal(false);
+  protected title = '';
+  protected description = '';
 
-  get tasks(): Task[] {
-    return this.taskService.getTasks();
+  protected openForm(): void {
+    this.formOpen.set(true);
   }
 
-  add() {
-    if (!this.newTitle.trim()) return;
-    this.taskService.add(this.newTitle.trim(), this.newDescription.trim());
-    this.newTitle = '';
-    this.newDescription = '';
+  protected closeForm(): void {
+    this.title = '';
+    this.description = '';
+    this.formOpen.set(false);
   }
 
-  update(id: number, changes: { title: string; description: string }) {
-    this.taskService.update(id, changes.title, changes.description);
+  protected add(): void {
+    const title = this.title.trim();
+    if (!title) return;
+
+    this.taskService.add({ title, description: this.description.trim() });
+    this.closeForm();
   }
 
-  delete(id: number) {
+  protected update(id: number, changes: TaskDraft): void {
+    this.taskService.update(id, changes);
+  }
+
+  protected remove(id: number): void {
     this.taskService.delete(id);
   }
 }

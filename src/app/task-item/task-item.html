@@ -1,21 +1,51 @@
-<li class="list-group-item">
-    @if (editing) {
-    <input class="form-control mb-2" placeholder="Title" [(ngModel)]="draftTitle" />
-    <textarea class="form-control mb-2" rows="2" placeholder="Description" [(ngModel)]="draftDescription"></textarea>
-    <button class="btn btn-success btn-sm me-2" (click)="confirm()">Save</button>
-    <button class="btn btn-secondary btn-sm" (click)="editing = false">Cancel</button>
-    } @else {
-    <div class="d-flex justify-content-between align-items-start gap-2">
-        <div>
-            <div class="fw-semibold">{{ task.title }}</div>
-            @if (task.description) {
-            <div class="text-muted small">{{ task.description }}</div>
-            }
-        </div>
-        <div class="text-nowrap">
-            <button class="btn btn-outline-primary btn-sm me-1" (click)="startEdit()">Edit</button>
-            <button class="btn btn-outline-danger btn-sm" (click)="remove.emit()">Delete</button>
-        </div>
+<div class="card h-100 shadow-sm">
+  @if (editing()) {
+    <div class="card-body">
+      <input
+        class="form-control mb-2"
+        placeholder="Title"
+        [(ngModel)]="title"
+        (keyup.enter)="confirm()"
+      />
+      <textarea
+        class="form-control"
+        rows="3"
+        placeholder="Description"
+        [(ngModel)]="description"
+      ></textarea>
     </div>
-    }
-</li>
+    <div class="card-footer bg-transparent d-flex gap-2">
+      <button class="btn btn-success btn-sm" [disabled]="!title.trim()" (click)="confirm()">
+        <i class="bi bi-check-lg me-1"></i>Save
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="cancel()">
+        <i class="bi bi-x-lg me-1"></i>Cancel
+      </button>
+    </div>
+  } @else {
+    <div class="card-body">
+      <h5 class="card-title">{{ task().title }}</h5>
+      @if (task().description) {
+        <p class="card-text text-muted mb-0">{{ task().description }}</p>
+      }
+    </div>
+    <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        aria-label="Edit task"
+        title="Edit"
+        (click)="startEdit()"
+      >
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button
+        class="btn btn-outline-danger btn-sm"
+        aria-label="Delete task"
+        title="Delete"
+        (click)="remove.emit()"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  }
+</div>

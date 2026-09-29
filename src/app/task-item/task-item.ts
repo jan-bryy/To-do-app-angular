@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Task } from '../task-service';
+import { Task, TaskDraft } from '../task-service';
 
 @Component({
   selector: 'app-task-item',
@@ -8,27 +8,29 @@ import { Task } from '../task-service';
   templateUrl: './task-item.html',
 })
 export class TaskItem {
-  @Input({ required: true }) task!: Task;
-  @Output() save = new EventEmitter<{ title: string; description: string }>();
-  @Output() remove = new EventEmitter<void>();
+  readonly task = input.required<Task>();
+  readonly save = output<TaskDraft>();
+  readonly remove = output<void>();
 
-  editing = false;
-  draftTitle = '';
-  draftDescription = '';
+  protected readonly editing = signal(false);
+  protected title = '';
+  protected description = '';
 
-  startEdit() {
-    this.draftTitle = this.task.title;
-    this.draftDescription = this.task.description ?? '';
-    this.editing = true;
+  protected startEdit(): void {
+    this.title = this.task().title;
+    this.description = this.task().description;
+    this.editing.set(true);
   }
 
-  confirm() {
-    if (this.draftTitle.trim()) {
-      this.save.emit({
-        title: this.draftTitle.trim(),
-        description: this.draftDescription.trim(),
-      });
+  protected confirm(): void {
+    const title = this.title.trim();
+    if (title) {
+      this.save.emit({ title, description: this.description.trim() });
     }
-    this.editing = false;
+    this.editing.set(false);
+  }
+
+  protected cancel(): void {
+    this.editing.set(false);
   }
 }

@@ -1,40 +1,43 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 export interface Task {
-  id: number;
+  readonly id: number;
   title: string;
   description: string;
 }
 
+export type TaskDraft = Pick<Task, 'title' | 'description'>;
+
+const STORAGE_KEY = 'tasks';
+
 @Injectable({ providedIn: 'root' })
 export class TaskService {
-  private key = 'tasks';
-  private tasks: Task[] = JSON.parse(localStorage.getItem(this.key) ?? '[]');
+  private readonly _tasks = signal<Task[]>(this.load());
+  readonly tasks = this._tasks.asReadonly();
 
-  getTasks(): Task[] {
-    return this.tasks;
+  add(draft: TaskDraft): void {
+    this.setTasks([...this._tasks(), { id: Date.now(), ...draft }]);
   }
 
-  add(title: string, description: string) {
-    this.tasks.push({ id: Date.now(), title, description });
-    this.save();
+  update(id: number, changes: TaskDraft): void {
+    this.setTasks(this._tasks().map((task) => (task.id === id ? { ...task, ...changes } : task)));
   }
 
-  update(id: number, title: string, description: string) {
-    const task = this.tasks.find(t => t.id === id);
-    if (task) {
-      task.title = title;
-      task.description = description;
-      this.save();
+  delete(id: number): void {
+    this.setTasks(this._tasks().filter((task) => task.id !== id));
+  }
+
+  private setTasks(tasks: Task[]): void {
+    this._tasks.set(tasks);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }
+
+  private load(): Task[] {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
+      return Array.isArray(saved) ? saved.map((task) => ({ description: '', ...task })) : [];
+    } catch {
+      return [];
     }
-  }
-
-  delete(id: number) {
-    this.tasks = this.tasks.filter(t => t.id !== id);
-    this.save();
-  }
-
-  private save() {
-    localStorage.setItem(this.key, JSON.stringify(this.tasks));
   }
 }

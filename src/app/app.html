@@ -1,18 +1,45 @@
-<div class="container my-5" style="max-width: 600px">
-  <h1 class="mb-4 text-center">Todo App</h1>
+<div class="container my-5" style="max-width: 900px">
+  <h1 class="mb-4 text-center"><i class="bi bi-journal-check me-2"></i>Todo App</h1>
 
-  <div class="mb-3">
-    <input class="form-control mb-2" placeholder="Task title..." [(ngModel)]="newTitle" (keyup.enter)="add()" />
-    <textarea class="form-control mb-2" rows="2" placeholder="Description (optional)..."
-      [(ngModel)]="newDescription"></textarea>
-    <button class="btn btn-primary w-100" (click)="add()">Add Task</button>
-  </div>
+  @if (formOpen()) {
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <input
+          class="form-control mb-2"
+          placeholder="Task title..."
+          [(ngModel)]="title"
+          (keyup.enter)="add()"
+        />
+        <textarea
+          class="form-control"
+          rows="2"
+          placeholder="Description (optional)..."
+          [(ngModel)]="description"
+        ></textarea>
+      </div>
+      <div class="card-footer bg-transparent d-flex gap-2">
+        <button class="btn btn-primary flex-grow-1" [disabled]="!title.trim()" (click)="add()">
+          <i class="bi bi-plus-lg me-1"></i>Add Task
+        </button>
+        <button class="btn btn-outline-secondary" (click)="closeForm()">
+          <i class="bi bi-x-lg me-1"></i>Cancel
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button class="btn btn-primary w-100 mb-4" (click)="openForm()">
+      <i class="bi bi-plus-lg me-1"></i>Add Task
+    </button>
+  }
 
-  <ul class="list-group">
-    @for (task of tasks; track task.id) {
-    <app-task-item [task]="task" (save)="update(task.id, $event)" (remove)="delete(task.id)" />
+  <div class="row row-cols-1 row-cols-md-2 g-3">
+    @for (task of tasks(); track task.id) {
+      <app-task-item [task]="task" (save)="update(task.id, $event)" (remove)="remove(task.id)" />
     } @empty {
-    <li class="list-group-item text-muted text-center">No tasks yet.</li>
+      <div class="col-12 text-center text-muted py-5">
+        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+        No tasks yet.
+      </div>
     }
-  </ul>
+  </div>
 </div>
